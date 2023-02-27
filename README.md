@@ -1,1 +1,3 @@
-# cs4341-part2
+# CS 4341 Digital Logic Project Part 2
+
+Can be compiled on the command line using "make" (given that iVerilog is installed).
