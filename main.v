@@ -15,22 +15,22 @@
 //Breadboard
 //
 //=================================================================
-module breadboard(A,B,C,opcode,error);
+module breadboard(input1,input2,output1,opcode,error);
 //=======================================================
 //
 // Parameter Definitions
 //
 //========================================================
-input [31:0] A;
-input [31:0] B;
+input [31:0] input1;
+input [31:0] input2;
 input [3:0] opcode;
-output [63:0] C;
+output [63:0] output1;
 output [1:0]error;
 
-wire [31:0] A;
-wire [31:0] B;
+wire [31:0] input1;
+wire [31:0] input2;
 wire [3:0] opcode;
-reg  [63:0] C;
+reg  [63:0] output1;
 reg  [1:0] error;
 
 
@@ -148,8 +148,8 @@ assign chErr[15]=unkErr;
 // INSTANTIATE MODULES
 //
 //===========================================================
-AddSub add1(B,A,modeSUB,outputADDSUB,Carry,ADDerror); 
-Div div1(B,A,outputQuotient,outputRemainder,DIVerror);
+AddSub add1(input2,input1,modeSUB,outputADDSUB,Carry,ADDerror); 
+Div div1(input2,input1,outputQuotient,outputRemainder,DIVerror);
 OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
 
@@ -169,7 +169,7 @@ begin
   modeSUB=~opcode[3]& opcode[2]&~opcode[1]& opcode[0];//0101, Channel 5
     
   // Set output of Operations to C
-  C=b; //Just a jumper
+  output1=b; //Just a jumper
   errHigh=DIVerror;
   errLow=ADDerror;
 
@@ -193,10 +193,10 @@ module testbench();
 //Local Variables
 //
 //====================================================
-   reg  [31:0] input2;
-   reg  [31:0] input1;
+   reg  [31:0] inp2;
+   reg  [31:0] inp1;
    reg  [3:0] opcode;
-   wire [63:0] output1;
+   wire [63:0] out1;
    wire [1:0] error;
    
 //====================================================
@@ -204,7 +204,7 @@ module testbench();
 // Create Breadboard
 //
 //====================================================
-	breadboard bb8(input1,input2,output1,opcode,error);
+	breadboard bb8(inp1,inp2,out1,opcode,error);
 
 //====================================================
 //
@@ -217,116 +217,125 @@ module testbench();
 	#2;	
 	
 	//---------------------------------
-	$write("[   B]");
-	$write("[   A]");
-	$write("[  OP]");
-	$write("[   C]");
-	$write("[ E]");
-	$display(";");
+	$write("[   input2]");
+	$write("[   input1]");
+	$write("[   opcode]");
+        $write("\n");
+	$write("[   output1]");
+	$write("[   error]");
+	$display(";\n");
 	//---------------------------------
-	input2=32'b00000000000000000000000000000010;
-	input1=32'b00000000000000000000000000000010;
+	inp2=32'b01010101010101010101010101111110;
+	inp1=32'b00101000100010000010000010001110;
 	opcode=4'b0100;//ADD
-	#10;
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	#20;
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%32b]",output1);
+        $write("\n");
+ 	$write("[%32b]",out1);
  	$write("[%2b]",error);	
 	$write(":Addition");
-	$display(";");
+	$display(";\n");
 	//---------------------------------
-	input2=32'b00000000000000000000000000000010;
-	input1=32'b00000000000000000000000000000100;
+	inp2=32'b00000000000000000000000000000010;
+	inp1=32'b00000000000000000000000000000100;
 	opcode=4'b0101;//SUB
-	#10	
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	#20	
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%32b]",output1);
+        $write("\n");
+ 	$write("[%32b]",out1);
  	$write("[%2b]",error);	
 	$write(":Subtraction");
-	$display(";");
+	$display(";\n");
 	
 	//---------------------------------
-	input2=32'b00000000000000000000000000000010;
-	input1=32'b00000000000000000000000000000010;
+	inp2=32'b00000000000000000000000000000010;
+	inp1=32'b00000000000000000000000000000010;
 	opcode=4'b0111;//DIV
-	#10	
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	#20	
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);	;
 	$write(":Division");
-	$display(";");
+	$display(";\n");
 	//---------------------------------
-	input2=32'b00000000000000000000000000000111;
-	input1=32'b00000000000000000000000000000100;
+	inp2=32'b00000000000000000000000000000111;
+	inp1=32'b00000000000000000000000000000100;
 	opcode=4'b1000;//MOD
-	#10	
+	#20	
 
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);	;
 	$write(":Modulus");
-	$display(";");
+	$display(";\n");
 	//---------------------------------
-	input2=32'b01000000000000000000000000000111;
-	input1=32'b01000000000000000000000000000100;
+	inp2=32'b01000000000000000000000000000111;
+	inp1=32'b01000000000000000000000000000100;
 	opcode=4'b0100;//Addition with Error
 	#10	
 
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);		
 	$write(":Addition with Error");
-	$display(";");
+	$display(";\n");
 
 	//---------------------------------
-	input2=32'b11100000000000000000000000000000;
-	input1=32'b01100000000000000000000000000000;
+	inp2=32'b11100000000000000000000000000000;
+	inp1=32'b01100000000000000000000000000000;
 	opcode=4'b0101;//Subtraction with Error
 	#10	
 
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);		
 	$write(":Subtraction with Error");
-	$display(";");
+	$display(";\n");
 
 	//---------------------------------
-	input2=32'b00000000000000000000000000000100;
-	input1=32'b00000000000000000000000000000000;
+	inp2=32'b00000000000000000000000000000100;
+	inp1=32'b00000000000000000000000000000000;
 	opcode=4'b0111;//Division with Error
 	#10	
 
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);	;	
 	$write(":Division with Error");
-	$display(";");
+	$display(";\n");
 	
 	//---------------------------------
-	input2=32'b00000000000000000000000000000100;
-	input1=32'b00000000000000000000000000000000;
+	inp2=32'b00000000000000000000000000000100;
+	inp1=32'b00000000000000000000000000000000;
 	opcode=4'b1000;//Modulus with Error
 	#10	
-	$write("[%32b]",input2);
- 	$write("[%32b]",input1);
+	$write("[%32b]",inp2);
+ 	$write("[%32b]",inp1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",output1);
+        $write("\n");
+ 	$write("[%64b]",out1);
  	$write("[%2b]",error);	
 	$write(":Modulus with Error");
-	$display(";");
+	$display(";\n");
 		
 
 
