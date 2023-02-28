@@ -14,7 +14,7 @@ module AddSub(inputA,inputB,mode,sum,carry,overflow);
 	input [31:0] inputA;
 	input [31:0] inputB;
     input mode;
-    output [31:0] sum;
+    output [63:0] sum;
 	output carry;
     output overflow;
 	

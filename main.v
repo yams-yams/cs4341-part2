@@ -24,13 +24,13 @@ module breadboard(A,B,C,opcode,error);
 input [31:0] A;
 input [31:0] B;
 input [3:0] opcode;
-output [31:0] C;
+output [63:0] C;
 output [1:0]error;
 
 wire [31:0] A;
 wire [31:0] B;
 wire [3:0] opcode;
-reg  [31:0] C;
+reg  [63:0] C;
 reg  [1:0] error;
 
 
@@ -65,7 +65,7 @@ wire       [ 1:0] unkErr;
 //----------
 // ADDITION
 //----------
-wire [31:0] outputADDSUB;
+wire [63:0] outputADDSUB;
 wire ADDerror;
 wire Carry;
 
@@ -196,7 +196,7 @@ module testbench();
    reg  [31:0] input2;
    reg  [31:0] input1;
    reg  [3:0] opcode;
-   wire [31:0] output1;
+   wire [63:0] output1;
    wire [1:0] error;
    
 //====================================================
