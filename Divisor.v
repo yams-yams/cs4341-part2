@@ -9,7 +9,7 @@
 //-------------------------------------------------
 
 
-module BehavioralDivision (dividend, divisor,quotient,remainder,error);
+module Div (dividend, divisor,quotient,remainder,error);
 input [31:0] dividend;
 input [31:0] divisor;
 output [63:0] quotient;

@@ -9,7 +9,7 @@
 //-------------------------------------------------
 
 
-module FourBitAddSub(inputA,inputB,mode,sum,carry,overflow);
+module AddSub(inputA,inputB,mode,sum,carry,overflow);
 //parameters    
 	input [31:0] inputA;
 	input [31:0] inputB;

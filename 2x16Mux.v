@@ -16,7 +16,7 @@
 //
 //=================================================================
 
-module StructMux2(channels, select, b);
+module ErrMux(channels, select, b);
 parameter chansize=2;
 input [15:0][chansize-1:0] channels;
 input [15:0]               select;

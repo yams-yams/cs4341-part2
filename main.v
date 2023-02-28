@@ -44,7 +44,7 @@ reg  [1:0] error;
 //========================================================
 
 wire [15:0] select;
-Dec4x16 dec1(opcode,select);
+Dec dec1(opcode,select);
 
 
 
@@ -148,10 +148,10 @@ assign chErr[15]=unkErr;
 // INSTANTIATE MODULES
 //
 //===========================================================
-FourBitAddSub add1(B,A,modeSUB,outputADDSUB,Carry,ADDerror); 
-BehavioralDivision div1(B,A,outputQuotient,outputRemainder,DIVerror);
-StructMux4 muxOps(channels,select,b);
-StructMux2 muxErr(chErr,select,bErr);
+AddSub add1(B,A,modeSUB,outputADDSUB,Carry,ADDerror); 
+Div div1(B,A,outputQuotient,outputRemainder,DIVerror);
+OpMux muxOps(channels,select,b);
+ErrMux muxErr(chErr,select,bErr);
 
 
 //====================================================
@@ -193,10 +193,10 @@ module testbench();
 //Local Variables
 //
 //====================================================
-   reg  [31:0] inputB;
-   reg  [31:0] inputA;
+   reg  [31:0] input2;
+   reg  [31:0] input1;
    reg  [3:0] opcode;
-   wire [31:0] outputC;
+   wire [31:0] output1;
    wire [1:0] error;
    
 //====================================================
@@ -204,7 +204,7 @@ module testbench();
 // Create Breadboard
 //
 //====================================================
-	breadboard bb8(inputA,inputB,outputC,opcode,error);
+	breadboard bb8(input1,input2,output1,opcode,error);
 
 //====================================================
 //
@@ -224,106 +224,106 @@ module testbench();
 	$write("[ E]");
 	$display(";");
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000010;
-	inputA=32'b00000000000000000000000000000010;
+	input2=32'b00000000000000000000000000000010;
+	input1=32'b00000000000000000000000000000010;
 	opcode=4'b0100;//ADD
 	#10;
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%32b]",outputC);
+ 	$write("[%32b]",output1);
  	$write("[%2b]",error);	
 	$write(":Addition");
 	$display(";");
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000010;
-	inputA=32'b00000000000000000000000000000100;
+	input2=32'b00000000000000000000000000000010;
+	input1=32'b00000000000000000000000000000100;
 	opcode=4'b0101;//SUB
 	#10	
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%32b]",outputC);
+ 	$write("[%32b]",output1);
  	$write("[%2b]",error);	
 	$write(":Subtraction");
 	$display(";");
 	
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000010;
-	inputA=32'b00000000000000000000000000000010;
+	input2=32'b00000000000000000000000000000010;
+	input1=32'b00000000000000000000000000000010;
 	opcode=4'b0111;//DIV
 	#10	
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);	;
 	$write(":Division");
 	$display(";");
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000111;
-	inputA=32'b00000000000000000000000000000100;
+	input2=32'b00000000000000000000000000000111;
+	input1=32'b00000000000000000000000000000100;
 	opcode=4'b1000;//MOD
 	#10	
 
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);	;
 	$write(":Modulus");
 	$display(";");
 	//---------------------------------
-	inputB=32'b01000000000000000000000000000111;
-	inputA=32'b01000000000000000000000000000100;
+	input2=32'b01000000000000000000000000000111;
+	input1=32'b01000000000000000000000000000100;
 	opcode=4'b0100;//Addition with Error
 	#10	
 
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);		
 	$write(":Addition with Error");
 	$display(";");
 
 	//---------------------------------
-	inputB=32'b11100000000000000000000000000000;
-	inputA=32'b01100000000000000000000000000000;
+	input2=32'b11100000000000000000000000000000;
+	input1=32'b01100000000000000000000000000000;
 	opcode=4'b0101;//Subtraction with Error
 	#10	
 
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);		
 	$write(":Subtraction with Error");
 	$display(";");
 
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000100;
-	inputA=32'b00000000000000000000000000000000;
+	input2=32'b00000000000000000000000000000100;
+	input1=32'b00000000000000000000000000000000;
 	opcode=4'b0111;//Division with Error
 	#10	
 
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);	;	
 	$write(":Division with Error");
 	$display(";");
 	
 	//---------------------------------
-	inputB=32'b00000000000000000000000000000100;
-	inputA=32'b00000000000000000000000000000000;
+	input2=32'b00000000000000000000000000000100;
+	input1=32'b00000000000000000000000000000000;
 	opcode=4'b1000;//Modulus with Error
 	#10	
-	$write("[%32b]",inputB);
- 	$write("[%32b]",inputA);
+	$write("[%32b]",input2);
+ 	$write("[%32b]",input1);
  	$write("[%4b]",opcode);
- 	$write("[%64b]",outputC);
+ 	$write("[%64b]",output1);
  	$write("[%2b]",error);	
 	$write(":Modulus with Error");
 	$display(";");
