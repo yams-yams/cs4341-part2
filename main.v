@@ -1,10 +1,6 @@
 //-------------------------------------------------
 //
-// Sample Testbench and Breadbaord
-// Eric William Becker
-// February 2, 2023
-//
-// For my students this semester.
+// Group SAAMU Project Part 2
 //
 //-------------------------------------------------
 
@@ -109,11 +105,18 @@ reg errLow;
 //
 // Connect the MUX to the OpCodes
 //
-// Channel 4, Opcode 0100, Addition
-// Channel 5, Opcode 0101, Subtraction
-// Channel 6, Opcode 0110, Mulitplication
-// Channel 7, Opcode 0111, Division (Behavioral)
-// Channel 8, Opcode 1000, Modulus (Behavioral)
+// Channel 0, Opcode 0000, Addition
+// Channel 1, Opcode 0001, Subtraction
+// Channel 2, Opcode 0010, Division (Behavioral)
+// Channel 3, Opcode 0011, Modulus (Behavioral)
+// Channel 4, Opcode 0100, AND
+// Channel 5, Opcode 0101, NAND
+// Channel 6, Opcode 0110, OR
+// Channel 7, Opcode 0111, NOR
+// Channel 8, Opcode 1000, NOT
+// Channel 9, Opcode 1001, NOOP
+// Channel 10, Opcode 1010, XOR
+// Channel 11, Opcode 1011, XNOR
 //
 //=======================================================
  
@@ -164,10 +167,9 @@ OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
 
 
-
 //=============================
 //
-//Perform Logic Gate Operations
+// Perform Logic Gate Operations
 //
 //=============================
 assign outputAND = input1&input2;
@@ -179,7 +181,6 @@ assign outputNOT = ~(input1);
 assign outputNOOP = input1;
 assign outputXOR = input1^input2;
 assign outputXNOR = input1^~input2;
-
 
 
 //====================================================
@@ -245,12 +246,13 @@ module testbench();
 	#2;	
 	
 	//---------------------------------
-	$write("[   input2]");
-	$write("[   input1]");
-	$write("[   opcode]");
+	$write("[input2]");
+	$write("[input1]");
+	$write("[opcode]");
         $write("\n");
-	$write("[   output1]");
-	$write("[   error]");
+	$write("[   output1   ]");
+	$write("[error]");
+	$write("[:Operation]");
 	$display(";\n");
 	//---------------------------------
 	inp2=32'b01010101010101010101010101111110;
@@ -481,12 +483,6 @@ module testbench();
 	$write(":XNOR");
 	$display(";\n");
 	
-
-
-
-
-
-
 
 
 	$finish;
