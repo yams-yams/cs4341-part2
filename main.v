@@ -4,8 +4,6 @@
 //
 //-------------------------------------------------
 
-
-
 //=================================================================
 //
 //Breadboard
@@ -195,7 +193,7 @@ always@(*)
 begin
   
   //Check for Subtraction Mode
-  modeSUB=~opcode[3]& opcode[2]&~opcode[1]& opcode[0];//0101, Channel 5
+  modeSUB=~opcode[3]&~opcode[2]&~opcode[1]&opcode[0];//0001, Channel 1
     
   // Set output of Operations to output1
   output1=b; //Just a jumper
@@ -309,7 +307,7 @@ module testbench();
 	$write(":Modulus");
 	$display(";\n");
 	//---------------------------------
-	inp2=32'b01000000000000000000000000000111;
+	inp2=36'b011111111111111111111111111111111111;
 	inp1=32'b01000000000000000000000000000100;
 	opcode=4'b0000;//Addition with Error (REPLACE WITH OVERFLOW ERROR)
 	#10	
