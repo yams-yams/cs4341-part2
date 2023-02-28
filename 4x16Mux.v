@@ -17,10 +17,10 @@
 //=================================================================
 
 module OpMux(channels, select, b);
-parameter chansize=4;
+parameter chansize=64;
 input [15:0][chansize-1:0] channels;
 input [15:0]      select;
-output      [chansize-1:0] b;
+output      [63:0] b;
 
 
 	assign b = ({chansize{select[15]}} & channels[15]) | 

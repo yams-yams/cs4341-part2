@@ -30,8 +30,8 @@ module AddSub(inputA,inputB,mode,sum,carry,overflow);
 
 //Local Variables
 	wire c0; //MOde assigned to C0
-        wire b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22,b23,b24,b25,b26,b27,b28,b29,b30,b31; //XOR Interfaces
-	wire c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24,c25,c26,c27,c28,c29,c30,c31,c32; //Carry Interfaces
+        wire b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22,b23,b24,b25,b26,b27,b28,b29,b30,b31,b32,b33,b34,b35,b36,b37,b38,b39,b40,b41,b42,b43,b44,b45,b46,b47,b48,b49,b50,b51,b52,b53,b54,b55,b56,b57,b58,b59,b60,b61,b62,b63,b64; //XOR Interfaces
+	wire c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24,c25,c26,c27,c28,c29,c30,c31,c32,c33,c34,c35,c36,c37,c38,c39,c40,c41,c42,c43,c44,c45,c46,c47,c48,c49,c50,c51,c52,c53,c54,c55,c56,c57,c58,c59,c60,c61,c62,c63,c64; //Carry Interfaces
 	assign c0=mode;//Mode=0, Addition; Mode=1, Subtraction
 	
 //        WIRE     WIRE     WIRE	
@@ -67,8 +67,42 @@ module AddSub(inputA,inputB,mode,sum,carry,overflow);
     assign b29 = inputB[29] ^ mode;
     assign b30 = inputB[30] ^ mode;
     assign b31 = inputB[31] ^ mode;
- 
-	FullAdder FA0(inputA[0],b0,  c0,c1,sum[0]);
+    assign b32 = 1'b0 ^ mode;
+    assign b33 = 1'b0 ^ mode;
+    assign b34 = 1'b0 ^ mode;
+    assign b35 = 1'b0 ^ mode;
+    assign b36 = 1'b0 ^ mode;
+    assign b37 = 1'b0 ^ mode;
+    assign b38 = 1'b0 ^ mode;
+    assign b39 = 1'b0 ^ mode;
+    assign b40 = 1'b0 ^ mode;
+    assign b41 = 1'b0 ^ mode;
+    assign b42 = 1'b0 ^ mode;
+    assign b43 = 1'b0 ^ mode;
+    assign b44 = 1'b0 ^ mode;
+    assign b45 = 1'b0 ^ mode;
+    assign b46 = 1'b0 ^ mode;
+    assign b47 = 1'b0 ^ mode;
+    assign b48 = 1'b0 ^ mode;
+    assign b49 = 1'b0 ^ mode;
+    assign b50 = 1'b0 ^ mode;
+    assign b51 = 1'b0 ^ mode;
+    assign b52 = 1'b0 ^ mode;
+    assign b53 = 1'b0 ^ mode;
+    assign b54 = 1'b0 ^ mode;
+    assign b55 = 1'b0 ^ mode;
+    assign b56 = 1'b0 ^ mode;
+    assign b57 = 1'b0 ^ mode;
+    assign b58 = 1'b0 ^ mode;
+    assign b59 = 1'b0 ^ mode;
+    assign b60 = 1'b0 ^ mode;
+    assign b61 = 1'b0 ^ mode;
+    assign b62 = 1'b0 ^ mode;
+    assign b63 = 1'b0 ^ mode;	
+    assign b64 = 1'b0 ^ mode;	
+
+
+        FullAdder FA0(inputA[0],b0,  c0,c1,sum[0]);
 	FullAdder FA1(inputA[1],b1,  c1,c2,sum[1]);
 	FullAdder FA2(inputA[2],b2,  c2,c3,sum[2]);
 	FullAdder FA3(inputA[3],b3,  c3,c4,sum[3]);
@@ -100,10 +134,41 @@ module AddSub(inputA,inputB,mode,sum,carry,overflow);
         FullAdder FA29(inputA[29],b29,  c29,c30,sum[29]);
         FullAdder FA30(inputA[30],b30,  c30,c31,sum[30]);
         FullAdder FA31(inputA[31],b31,  c31,c32,sum[31]);
-
+        FullAdder FA32(1'b0,b32,  c32,c33,sum[32]);
+        FullAdder FA33(1'b0,b33,  c33,c34,sum[33]);
+        FullAdder FA34(1'b0,b34,  c34,c35,sum[34]);
+        FullAdder FA35(1'b0,b35,  c35,c36,sum[35]);
+        FullAdder FA36(1'b0,b36,  c36,c37,sum[36]);
+        FullAdder FA37(1'b0,b37,  c37,c38,sum[37]);
+        FullAdder FA38(1'b0,b38,  c38,c39,sum[38]);
+        FullAdder FA39(1'b0,b39,  c39,c40,sum[39]);
+        FullAdder FA40(1'b0,b40,  c40,c41,sum[40]);
+        FullAdder FA41(1'b0,b41,  c41,c42,sum[41]);
+        FullAdder FA42(1'b0,b42,  c42,c43,sum[42]);
+        FullAdder FA43(1'b0,b43,  c43,c44,sum[43]);
+        FullAdder FA44(1'b0,b44,  c44,c45,sum[44]);
+        FullAdder FA45(1'b0,b45,  c45,c46,sum[45]);
+        FullAdder FA46(1'b0,b46,  c46,c47,sum[46]);
+        FullAdder FA47(1'b0,b47,  c47,c48,sum[47]);
+        FullAdder FA48(1'b0,b48,  c48,c49,sum[48]);
+        FullAdder FA49(1'b0,b49,  c49,c50,sum[49]);
+        FullAdder FA50(1'b0,b50,  c50,c51,sum[50]);
+        FullAdder FA51(1'b0,b51,  c51,c52,sum[51]);
+        FullAdder FA52(1'b0,b52,  c52,c53,sum[52]);
+        FullAdder FA53(1'b0,b53,  c53,c54,sum[53]);
+        FullAdder FA54(1'b0,b54,  c54,c55,sum[54]);
+        FullAdder FA55(1'b0,b55,  c55,c56,sum[55]);
+        FullAdder FA56(1'b0,b56,  c56,c57,sum[56]);
+        FullAdder FA57(1'b0,b57,  c57,c58,sum[57]);
+        FullAdder FA58(1'b0,b58,  c58,c59,sum[58]);
+        FullAdder FA59(1'b0,b59,  c59,c60,sum[59]);
+        FullAdder FA60(1'b0,b60,  c60,c61,sum[60]);
+        FullAdder FA61(1'b0,b61,  c61,c62,sum[61]);
+        FullAdder FA62(1'b0,b62,  c62,c63,sum[62]);
+        FullAdder FA63(1'b0,b63,  c63,c64,sum[63]);
 always@(*)
 begin
-	 overflow=c32^c31;
+	 overflow=c64^c63;
 end
  
 endmodule

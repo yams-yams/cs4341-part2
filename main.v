@@ -48,8 +48,8 @@ Dec dec1(opcode,select);
 
 
 
-wire [15:0][ 3:0] channels;
-wire       [ 3:0] b;
+wire [15:0][ 63:0] channels;
+wire       [ 63:0] b;
 wire       [ 3:0] unknown;
 
 wire [15:0][ 1:0]  chErr;
@@ -280,7 +280,7 @@ module testbench();
 	$display(";\n");
 	
 	//---------------------------------
-	inp2=32'b00000000000000000000000000000010;
+	inp2=32'b00000111000000000000000000000010;
 	inp1=32'b00000000000000000000000000000010;
 	opcode=4'b0010;//DIV
 	#20	
@@ -289,11 +289,11 @@ module testbench();
  	$write("[%4b]",opcode);
         $write("\n");
  	$write("[%64b]",out1);
- 	$write("[%2b]",error);	;
+ 	$write("[%2b]",error);	
 	$write(":Division");
 	$display(";\n");
 	//---------------------------------
-	inp2=32'b00000000000000000000000000000111;
+	inp2=32'b00000111100000000000000000000111;
 	inp1=32'b00000000000000000000000000000100;
 	opcode=4'b0011;//MOD
 	#20	
@@ -309,7 +309,7 @@ module testbench();
 	//---------------------------------
 	inp2=32'b01000000000000000000000000000111;
 	inp1=32'b01000000000000000000000000000100;
-	opcode=4'b0000;//Addition with Error
+	opcode=4'b0000;//Addition with Error (REPLACE WITH OVERFLOW ERROR)
 	#10	
 
 	$write("[%32b]",inp2);
@@ -318,7 +318,7 @@ module testbench();
         $write("\n");
  	$write("[%64b]",out1);
  	$write("[%2b]",error);		
-	$write(":Addition with Error");
+	$write(":Addition with Error (Need to Replace)");
 	$display(";\n");
 
 	//---------------------------------
@@ -333,7 +333,7 @@ module testbench();
         $write("\n");
  	$write("[%64b]",out1);
  	$write("[%2b]",error);		
-	$write(":Subtraction with Error");
+	$write(":Subtraction with Error (Need to Delete)");
 	$display(";\n");
 
 	//---------------------------------
