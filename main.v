@@ -307,9 +307,9 @@ module testbench();
 	$write(":Modulus");
 	$display(";\n");
 	//---------------------------------
-	inp2=36'b011111111111111111111111111111111111;
-	inp1=32'b01000000000000000000000000000100;
-	opcode=4'b0000;//Addition with Error (REPLACE WITH OVERFLOW ERROR)
+	inp2=32'b01111111111111111111111111111111;
+	inp1=32'b01111111111111111111111111111111;
+	opcode=4'b0000;//Subtraction with Error (REPLACE WITH OVERFLOW ERROR)
 	#10	
 
 	$write("[%32b]",inp2);
@@ -318,25 +318,10 @@ module testbench();
         $write("\n");
  	$write("[%64b]",out1);
  	$write("[%2b]",error);		
-	$write(":Addition with Error (Need to Replace)");
+	$write(":Addition with Overflow Error");
 	$display(";\n");
 
-	//---------------------------------
-	inp2=32'b11100000000000000000000000000000;
-	inp1=32'b01100000000000000000000000000000;
-	opcode=4'b0001;//Subtraction with Error
-	#10	
-
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);		
-	$write(":Subtraction with Error (Need to Delete)");
-	$display(";\n");
-
-	//---------------------------------
+        //---------------------------------
 	inp2=32'b00000000000000000000000000000100;
 	inp1=32'b00000000000000000000000000000000;
 	opcode=4'b0010;//Division with Error
