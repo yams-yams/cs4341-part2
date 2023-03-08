@@ -1,6 +1,6 @@
 # CS 4341 Digital Logic Project Part 2
 
-Can be compiled using iVerilog with the given Makefile "make" command. Otherwise, compile all .v files together and 
+Can be compiled using iVerilog with the given Makefile "make" command. In any case, compile all .v files together and run to see the output displayed.
 
 Contents:
 
