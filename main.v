@@ -160,7 +160,8 @@ assign chErr[15]=unkErr;
 //
 //===========================================================
 AddSub add1(input2,input1,modeSUB,outputADDSUB,Carry,ADDerror); 
-Div div1(input2,input1,outputQuotient,outputRemainder,DIVerror);
+Div div1(input2,input1,outputQuotient,DIVerror);
+Mod mod1(input2,input1,outputRemainder,DIVerror);
 OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
 
