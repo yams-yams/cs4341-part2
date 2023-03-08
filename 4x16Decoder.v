@@ -1,7 +1,7 @@
 //-------------------------------------------------
 //
 // 4 to 16 decoder, Structural. 
-// Group SAAMU Project Part 2
+// Group SAMU Project Part 2
 //
 //-------------------------------------------------
 

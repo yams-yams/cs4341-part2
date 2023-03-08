@@ -1,7 +1,7 @@
 //-------------------------------------------------
 //
 // 32-Bit Adder/Subtractor with 64-Bit Outputs
-// Group SAAMU Project Part 2
+// Group SAMU Project Part 2
 //
 //-------------------------------------------------
 

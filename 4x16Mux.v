@@ -1,7 +1,7 @@
 //-------------------------------------------------
 //
 // 4x16 Multiplexer Circuit
-// Group SAAMU Project Part 2
+// Group SAMU Project Part 2
 //
 //-------------------------------------------------
 

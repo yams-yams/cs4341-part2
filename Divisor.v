@@ -1,7 +1,7 @@
 //-------------------------------------------------
 //
 // Behavioral Division
-// Group SAAMU Project Part 2
+// Group SAMU Project Part 2
 //
 //-------------------------------------------------
 

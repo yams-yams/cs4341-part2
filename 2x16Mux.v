@@ -1,7 +1,7 @@
 //-------------------------------------------------
 //
 // 2x16 Error Multiplexer Circuit
-// Group SAAMU Project Part 2
+// Group SAMU Project Part 2
 //
 //-------------------------------------------------
 
