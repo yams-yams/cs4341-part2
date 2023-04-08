@@ -72,9 +72,9 @@ reg modeSUB;
 //----------------
 //DIVISION/MODULUS
 //----------------
-//*wire [63:0] outputQuotient;
-//*wire [63:0] outputRemainder;
-//*wire DIVerror;
+wire [63:0] outputQuotient;
+wire [63:0] outputRemainder;
+wire DIVerror;
 
 
 //-----------
@@ -96,7 +96,7 @@ wire [63:0] outputXNOR;
 //=======================================================
  
 
-//*reg errHigh;
+reg errHigh;
 reg errLow;
 
 //=======================================================
@@ -120,8 +120,8 @@ reg errLow;
  
 assign channels[ 0]=outputADDSUB;
 assign channels[ 1]=outputADDSUB;
-assign channels[ 2]=0;//outputQuotient;
-assign channels[ 3]=0;//outputRemainder;
+assign channels[ 2]=outputQuotient;
+assign channels[ 3]=outputRemainder;
 assign channels[ 4]=outputAND;
 assign channels[ 5]=outputNAND;
 assign channels[ 6]=outputOR;
@@ -137,8 +137,8 @@ assign channels[15]=unknown;
  
 assign chErr[ 0]={1'b0,errLow};
 assign chErr[ 1]={1'b0,errLow};
-assign chErr[ 2]={1'b0,1'b0};//*errHigh,1'b0};
-assign chErr[ 3]={1'b0,1'b0};//*errHigh,1'b0};
+assign chErr[ 2]={errHigh,1'b0};
+assign chErr[ 3]={errHigh,1'b0};
 assign chErr[ 4]=unkErr;
 assign chErr[ 5]=unkErr;
 assign chErr[ 6]=unkErr;
@@ -160,8 +160,8 @@ assign chErr[15]=unkErr;
 //
 //===========================================================
 AddSub add1(input2,input1,modeSUB,outputADDSUB,Carry,ADDerror); 
-//*Div div1(input2,input1,outputQuotient,DIVerror);
-//*Mod mod1(input2,input1,outputRemainder,DIVerror);
+Div div1(input2,input1,outputQuotient,DIVerror);
+Mod mod1(input2,input1,outputRemainder,DIVerror);
 OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
 
@@ -198,7 +198,7 @@ begin
     
   // Set output of Operations to output1
   output1=b; //Just a jumper
-  //*errHigh=DIVerror;
+  errHigh=DIVerror;
   errLow=ADDerror;
 
   // Set Errors of Operations to Error
@@ -221,7 +221,6 @@ module testbench();
 //Local Variables
 //
 //====================================================
-   
    reg  [31:0] inp2;
    reg  [31:0] inp1;
    reg  [3:0] opcode;
@@ -280,7 +279,7 @@ module testbench();
  	$write("[%2b]",error);	
 	$write(":Subtraction");
 	$display(";\n");
-/*	
+	
 	//---------------------------------
 	inp2=32'b00000111000000000000000000000010;
 	inp1=32'b00000000000000000000000000000010;
@@ -308,7 +307,7 @@ module testbench();
  	$write("[%2b]",error);	;
 	$write(":Modulus");
 	$display(";\n");
-*/	//---------------------------------
+	//---------------------------------
 	inp2=32'b01111111111111111111111111111111;
 	inp1=32'b01111111111111111111111111111111;
 	opcode=4'b0000;//Subtraction with Error (REPLACE WITH OVERFLOW ERROR)
