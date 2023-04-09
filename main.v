@@ -44,7 +44,7 @@ Dec dec1(opcode,select);
 
 wire [15:0][ 63:0] channels;
 wire       [ 63:0] b;
-wire       [ 3:0] unknown;
+wire       [ 63:0] unknown;
 
 wire [15:0][ 1:0]  chErr;
 wire       [ 1:0]   bErr;
@@ -77,8 +77,9 @@ wire Carry;
 reg modeSUB;
 
 //----------------
-//DIVISION/MODULUS
+//MULTIPLICATION/DIVISION/MODULUS
 //----------------
+wire [63:0] outputMULT;
 wire [63:0] outputQuotient;
 wire [63:0] outputRemainder;
 wire DIVerror;
@@ -102,26 +103,25 @@ wire [63:0] outputXNOR;
 //
 //=======================================================
  
-
-//reg errHigh;
+reg errHigh;
 reg errLow;
 
 //=======================================================
 //
 // Connect the MUX to the OpCodes
 //
-// Channel 0, Opcode 0000, NOOP Addition
-// Channel 1, Opcode 0001, Addition Subtraction
-// Channel 2, Opcode 0010, Subtraction Division (Behavioral)
-// Channel 3, Opcode 0011, Multiplication Modulus (Behavioral)
-// Channel 4, Opcode 0100, Division AND
-// Channel 5, Opcode 0101, Modulus NAND
-// Channel 6, Opcode 0110, NOT OR
-// Channel 7, Opcode 0111, AND NOR
-// Channel 8, Opcode 1000, OR NOT
-// Channel 9, Opcode 1001, NAND NOOP
-// Channel 10, Opcode 1010, NOR XOR
-// Channel 11, Opcode 1011, XOR XNOR
+// Channel 0, Opcode 0000, NOOP 
+// Channel 1, Opcode 0001, Addition 
+// Channel 2, Opcode 0010, Subtraction 
+// Channel 3, Opcode 0011, Multiplication (Behavioral)
+// Channel 4, Opcode 0100, Division (Behavioral)
+// Channel 5, Opcode 0101, Modulus (Behavioral)
+// Channel 6, Opcode 0110, NOT 
+// Channel 7, Opcode 0111, AND
+// Channel 8, Opcode 1000, OR 
+// Channel 9, Opcode 1001, NAND 
+// Channel 10, Opcode 1010, NOR 
+// Channel 11, Opcode 1011, XOR 
 // Channel 12, Opcode 1100, XNOR
 // Channel 13, Opcode 1101, RESET
 //
@@ -130,7 +130,7 @@ reg errLow;
 assign channels[ 0]=current;
 assign channels[ 1]=outputADDSUB;
 assign channels[ 2]=outputADDSUB;
-assign channels[ 3]=0;//Multiplication
+assign channels[ 3]=outputMULT;//Multiplication
 assign channels[ 4]=outputQuotient;
 assign channels[ 5]=outputRemainder;
 assign channels[ 6]=outputNOT;
@@ -146,10 +146,8 @@ assign channels[15]=unknown;
  
 assign chErr[ 0]={1'b0,errLow};
 assign chErr[ 1]={1'b0,errLow};
-assign chErr[ 2]={1'b0,errLow};
-assign chErr[ 3]={1'b0,errLow};
-//assign chErr[ 2]={errHigh,1'b0};
-//assign chErr[ 3]={errHigh,1'b0};
+assign chErr[ 2]={errHigh,1'b0};
+assign chErr[ 3]={errHigh,1'b0};
 assign chErr[ 4]=unkErr;
 assign chErr[ 5]=unkErr;
 assign chErr[ 6]=unkErr;
@@ -171,34 +169,22 @@ assign chErr[15]=unkErr;
 //
 //===========================================================
 AddSub add1(reg2,reg1,modeSUB,outputADDSUB,Carry,ADDerror); 
+Mult mult1(reg2, reg1, outputMULT);
 Div div1(reg2,reg1,outputQuotient,DIVerror);
 Mod mod1(reg2,reg1,outputRemainder,DIVerror);
+NOT not1(reg2, outputNOT);
+ANDER and1(reg2, reg1, outputAND);
+ORER or1(reg2, reg1, outputOR);
+NANDER nand1(reg2, reg1, outputNAND);
+NORER nor1(reg2, reg1, outputNOR);
+XORER xor1(reg2, reg1, outputXOR);
+XNORER xnor1(reg2, reg1, outputXNOR);
+
+
+
+
 OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
-
-
-//=============================
-//
-// Perform Logic Gate Operations
-//
-//=============================
-assign outputAND = input1&input2;
-assign outputNAND = ~(input1&input2);
-assign outputOR = input1|input2;
-assign outputNOR = ~(input1|input2);
-assign outputNOT = ~(input1);
-assign outputNOT = ~(input1);
-assign outputNOOP = input1;
-assign outputXOR = input1^input2;
-assign outputXNOR = input1^~input2;
-
-
-//====================================================
-//
-//Perform the gate-level operations in the Breadboard
-//
-//====================================================
- 
 
 
 always@(*)
@@ -211,7 +197,7 @@ begin
     
   // Set output of Operations to output1
   output1=b; //Just a jumper
-  //errHigh=DIVerror;
+  errHigh=DIVerror;
   errLow=ADDerror;
 
   // Set Errors of Operations to Error
@@ -277,12 +263,20 @@ initial begin
   forever
     begin 
       case (opcode)
-        0: $display("%32b ==> \n%32b         , NO-OP",bb8.current,bb8.b);
+        0: $display("%32b ==> \n%64b         , NO-OP",bb8.current[31:0],bb8.b);
+	1: $display("%32b  +  %32b = \n%64b  , ADD"  ,bb8.current[31:0],inp1,bb8.b);
+	2: $display("%32b  -  %32b = \n%64b  , SUB"  ,bb8.current[31:0],inp1,bb8.b);
+	3: $display("%32b  *  %32b = \n%64b  , MULT"  ,bb8.current[31:0],inp1,bb8.b);
+	4: $display("%32b  /  %32b = \n%64b  , DIV"  ,bb8.current[31:0],inp1,bb8.b);
+	5: $display("%32b  MOD  %32b = \n%64b  , MOD"  ,bb8.current[31:0],inp1,bb8.b);
+	6: $display("NOT  %32b = \n%64b  , NOT"  ,bb8.current[31:0],bb8.b);
+	7: $display("%32b AND %32b = \n%64b  , AND"  ,bb8.current[31:0],inp1,bb8.b);
+	8: $display("%32b OR %32b = \n%64b  , OR"  ,bb8.current[31:0],inp1,bb8.b);
+	9: $display("%32b NAND %32b = \n%64b  , NAND"  ,bb8.current[31:0],inp1,bb8.b);
+	10: $display("%32b NOR %32b = \n%64b  , NOR"  ,bb8.current[31:0],inp1,bb8.b);
+	11: $display("%32b XOR %32b = \n%64b  , XOR"  ,bb8.current[31:0],inp1,bb8.b);
+	12: $display("%32b XNOR %32b = \n%64b  , XNOR"  ,bb8.current[31:0],inp1,bb8.b);
         13: $display("%32b ==> \n%64b         , RESET",32'b00000000000000000000000000000000,bb8.b);
-	1: $display("%32b  +  %32b \n= %64b  , ADD"  ,bb8.current,inp1,bb8.b);
-	//9: $display("%4b AND %4b = %4b  , AND"  ,bb8.cur,inputA,bb8.b);
-	//10: $display("%4b OR %4b = %4b  , OR"  ,bb8.cur,inputA,bb8.b);		 
-	//11: $display("%4b XOR %4b = %4b  , XOR"  ,bb8.cur,inputA,bb8.b);
 		 
       endcase
  
@@ -306,12 +300,52 @@ end
 	opcode=4'b1101;//RESET
 	#10
 	//---------------------------------	
-	inp1=32'b00000000000000000000000000000001;
+	inp1=32'b00010100001100000101111001111001;
 	opcode=4'b0001;//ADD
 	#10;
 	//---------------------------------	
-	inp1=32'b00000000000000000000000000000001;
-	opcode=4'b0001;//ADD
+	inp1=32'b00000000000000000000000001111001;
+	opcode=4'b0010;//SUB
+	#10
+	//---------------------------------
+        inp1=32'b00000000000000000000000001111001;
+	opcode=4'b0011;//MULT
+	#10
+	//---------------------------------
+        inp1=32'b00000000000000000000000000000011;
+	opcode=4'b0100;//DIV
+	#10
+	//---------------------------------
+        inp1=32'b00010100000000000000000000000001;
+	opcode=4'b0101;//MOD
+	#10
+	//---------------------------------
+        inp1=32'b11100111001110011100111001110011;
+	opcode=4'b0110;//NOT
+	#10
+	//---------------------------------
+        inp1=32'b00000000000000000000111111111011;
+	opcode=4'b0111;//AND
+	#10
+	//---------------------------------
+        inp1=32'b01110000000000001110000001111001;
+	opcode=4'b1000;//OR
+	#10
+	//---------------------------------
+        inp1=32'b01111111100000111111100001100111;
+	opcode=4'b1001;//NAND
+	#10
+	//---------------------------------
+        inp1=32'b01111000000000000111000000110001;
+	opcode=4'b1010;//NOR
+	#10
+	//---------------------------------
+        inp1=32'b00011000001110000101001100010100;
+	opcode=4'b1011;//XOR
+	#10
+	//---------------------------------
+        inp1=32'b11100011000100110111000110110001;
+	opcode=4'b1100;//XNOR
 	#10
 	//---------------------------------
 
