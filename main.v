@@ -9,17 +9,19 @@
 //Breadboard
 //
 //=================================================================
-module breadboard(input1,input2,output1,opcode,error);
+module breadboard(clock,reset,input1,input2,output1,opcode,error);
 //=======================================================
 //
 // Parameter Definitions
 //
 //========================================================
+input clock;
+input reset;
 input [31:0] input1;
 input [31:0] input2;
 input [3:0] opcode;
 output [63:0] output1;
-output [1:0]error;
+output [1:0] error;
 
 wire [31:0] input1;
 wire [31:0] input2;
@@ -40,8 +42,6 @@ reg  [1:0] error;
 wire [15:0] select;
 Dec dec1(opcode,select);
 
-
-
 wire [15:0][ 63:0] channels;
 wire       [ 63:0] b;
 wire       [ 3:0] unknown;
@@ -50,6 +50,13 @@ wire [15:0][ 1:0]  chErr;
 wire       [ 1:0]   bErr;
 wire       [ 1:0] unkErr;
 
+reg [31:0] reg1;
+reg [31:0] reg2;
+
+reg [63:0] next;
+wire [63:0] current;
+
+DFF ACC1 [63:0] (clock, next, current);
 //=======================================================
 //
 // INTERFACES
@@ -96,49 +103,53 @@ wire [63:0] outputXNOR;
 //=======================================================
  
 
-reg errHigh;
+//reg errHigh;
 reg errLow;
 
 //=======================================================
 //
 // Connect the MUX to the OpCodes
 //
-// Channel 0, Opcode 0000, Addition
-// Channel 1, Opcode 0001, Subtraction
-// Channel 2, Opcode 0010, Division (Behavioral)
-// Channel 3, Opcode 0011, Modulus (Behavioral)
-// Channel 4, Opcode 0100, AND
-// Channel 5, Opcode 0101, NAND
-// Channel 6, Opcode 0110, OR
-// Channel 7, Opcode 0111, NOR
-// Channel 8, Opcode 1000, NOT
-// Channel 9, Opcode 1001, NOOP
-// Channel 10, Opcode 1010, XOR
-// Channel 11, Opcode 1011, XNOR
+// Channel 0, Opcode 0000, NOOP Addition
+// Channel 1, Opcode 0001, Addition Subtraction
+// Channel 2, Opcode 0010, Subtraction Division (Behavioral)
+// Channel 3, Opcode 0011, Multiplication Modulus (Behavioral)
+// Channel 4, Opcode 0100, Division AND
+// Channel 5, Opcode 0101, Modulus NAND
+// Channel 6, Opcode 0110, NOT OR
+// Channel 7, Opcode 0111, AND NOR
+// Channel 8, Opcode 1000, OR NOT
+// Channel 9, Opcode 1001, NAND NOOP
+// Channel 10, Opcode 1010, NOR XOR
+// Channel 11, Opcode 1011, XOR XNOR
+// Channel 12, Opcode 1100, XNOR
+// Channel 13, Opcode 1101, RESET
 //
 //=======================================================
  
-assign channels[ 0]=outputADDSUB;
+assign channels[ 0]=current;
 assign channels[ 1]=outputADDSUB;
-assign channels[ 2]=outputQuotient;
-assign channels[ 3]=outputRemainder;
-assign channels[ 4]=outputAND;
-assign channels[ 5]=outputNAND;
-assign channels[ 6]=outputOR;
-assign channels[ 7]=outputNOR;
-assign channels[ 8]=outputNOT;
-assign channels[ 9]=outputNOOP;
-assign channels[10]=outputXOR;
-assign channels[11]=outputXNOR;
-assign channels[12]=unknown;
-assign channels[13]=unknown;
+assign channels[ 2]=outputADDSUB;
+assign channels[ 3]=0;//Multiplication
+assign channels[ 4]=outputQuotient;
+assign channels[ 5]=outputRemainder;
+assign channels[ 6]=outputNOT;
+assign channels[ 7]=outputAND;
+assign channels[ 8]=outputOR;
+assign channels[ 9]=outputNAND;
+assign channels[10]=outputNOR;
+assign channels[11]=outputXOR;
+assign channels[12]=outputXNOR;
+assign channels[13]=0;//RESET
 assign channels[14]=unknown;
 assign channels[15]=unknown;
  
 assign chErr[ 0]={1'b0,errLow};
 assign chErr[ 1]={1'b0,errLow};
-assign chErr[ 2]={errHigh,1'b0};
-assign chErr[ 3]={errHigh,1'b0};
+assign chErr[ 2]={1'b0,errLow};
+assign chErr[ 3]={1'b0,errLow};
+//assign chErr[ 2]={errHigh,1'b0};
+//assign chErr[ 3]={errHigh,1'b0};
 assign chErr[ 4]=unkErr;
 assign chErr[ 5]=unkErr;
 assign chErr[ 6]=unkErr;
@@ -159,9 +170,9 @@ assign chErr[15]=unkErr;
 // INSTANTIATE MODULES
 //
 //===========================================================
-AddSub add1(input2,input1,modeSUB,outputADDSUB,Carry,ADDerror); 
-Div div1(input2,input1,outputQuotient,DIVerror);
-Mod mod1(input2,input1,outputRemainder,DIVerror);
+AddSub add1(reg2,reg1,modeSUB,outputADDSUB,Carry,ADDerror); 
+Div div1(reg2,reg1,outputQuotient,DIVerror);
+Mod mod1(reg2,reg1,outputRemainder,DIVerror);
 OpMux muxOps(channels,select,b);
 ErrMux muxErr(chErr,select,bErr);
 
@@ -193,17 +204,21 @@ assign outputXNOR = input1^~input2;
 always@(*)
 begin
   
+  reg1 = input1;
+  reg2 = current[31:0]; //High 32 bits are dropped
   //Check for Subtraction Mode
-  modeSUB=~opcode[3]&~opcode[2]&~opcode[1]&opcode[0];//0001, Channel 1
+  modeSUB=~opcode[3]&~opcode[2]&opcode[1]&~opcode[0];//0010, Channel 2
     
   // Set output of Operations to output1
   output1=b; //Just a jumper
-  errHigh=DIVerror;
+  //errHigh=DIVerror;
   errLow=ADDerror;
 
   // Set Errors of Operations to Error
   error=bErr;
 
+  //assign output=b;
+  next=b;
 end
  
 endmodule
@@ -221,253 +236,84 @@ module testbench();
 //Local Variables
 //
 //====================================================
+   reg clock;
+   reg reset;
    reg  [31:0] inp2;
    reg  [31:0] inp1;
    reg  [3:0] opcode;
    wire [63:0] out1;
    wire [1:0] error;
+   reg [15:0] count;
    
 //====================================================
 //
 // Create Breadboard
 //
 //====================================================
-	breadboard bb8(inp1,inp2,out1,opcode,error);
+    breadboard bb8(clock,reset,inp1,inp2,out1,opcode,error);
 
+
+//====================================================
+//
+//CLOCK Thread
+//
+//====================================================
+initial begin
+    forever
+        begin
+            clock=0;
+            #5;
+            clock=1;
+            #5;
+                $display("Tick");
+        end
+    end
+//====================================================
+//
+// DISPLAY Thread
+//
+//====================================================
+initial begin
+  forever
+    begin 
+      case (opcode)
+        0: $display("%32b ==> \n%32b         , NO-OP",bb8.current,bb8.b);
+        13: $display("%32b ==> \n%64b         , RESET",32'b00000000000000000000000000000000,bb8.b);
+	1: $display("%32b  +  %32b \n= %64b  , ADD"  ,bb8.current,inp1,bb8.b);
+	//9: $display("%4b AND %4b = %4b  , AND"  ,bb8.cur,inputA,bb8.b);
+	//10: $display("%4b OR %4b = %4b  , OR"  ,bb8.cur,inputA,bb8.b);		 
+	//11: $display("%4b XOR %4b = %4b  , XOR"  ,bb8.cur,inputA,bb8.b);
+		 
+      endcase
+ 
+      #10;
+    end
+end
 //====================================================
 //
 // STIMULOUS
 //
 //====================================================
 
-
 	initial begin//Start Stimulous Thread
-	#2;	
-	
+	#6;	
 	//---------------------------------
-	$write("[input2]");
-	$write("[input1]");
-	$write("[opcode]");
-        $write("\n");
-	$write("[   output1   ]");
-	$write("[error]");
-	$write("[:Operation]");
-	$display(";\n");
-	//---------------------------------
-	inp2=32'b01010101010101010101010101111110;
-	inp1=32'b00101000100010000010000010001110;
-	opcode=4'b0000;//ADD
-	#20;
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%32b]",out1);
- 	$write("[%2b]",error);	
-	$write(":Addition");
-	$display(";\n");
-	//---------------------------------
-	inp2=32'b00000000000000000000000000000010;
-	inp1=32'b00000000000000000000000000000100;
-	opcode=4'b0001;//SUB
-	#20	
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%32b]",out1);
- 	$write("[%2b]",error);	
-	$write(":Subtraction");
-	$display(";\n");
-	
-	//---------------------------------
-	inp2=32'b00000111000000000000000000000010;
-	inp1=32'b00000000000000000000000000000010;
-	opcode=4'b0010;//DIV
-	#20	
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":Division");
-	$display(";\n");
-	//---------------------------------
-	inp2=32'b00000111100000000000000000000111;
-	inp1=32'b00000000000000000000000000000100;
-	opcode=4'b0011;//MOD
-	#20	
-
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	;
-	$write(":Modulus");
-	$display(";\n");
-	//---------------------------------
-	inp2=32'b01111111111111111111111111111111;
-	inp1=32'b01111111111111111111111111111111;
-	opcode=4'b0000;//Subtraction with Error (REPLACE WITH OVERFLOW ERROR)
-	#10	
-
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);		
-	$write(":Addition with Overflow Error");
-	$display(";\n");
-
-        //---------------------------------
-	inp2=32'b00000000000000000000000000000100;
 	inp1=32'b00000000000000000000000000000000;
-	opcode=4'b0010;//Division with Error
-	#10	
-
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	;	
-	$write(":Division with Error");
-	$display(";\n");
-	
+	opcode=4'b0000;//NO-OP
+	#10; 
 	//---------------------------------
-	inp2=32'b00000000000000000000000000000100;
 	inp1=32'b00000000000000000000000000000000;
-	opcode=4'b0011;//Modulus with Error
-	#10	
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":Modulus with Error");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b0100;//AND
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":AND");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b0101;//NAND
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":NAND");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b0110;//OR
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":OR");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b0111;//NOR
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":NOR");
-	$display(";\n");
-	
-        //---------------------------------
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b1000;//NOT
-	#10	
-        
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":NOT");
-	$display(";\n");
-	
-        //---------------------------------
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b1001;//NO-OP
-	#10	
-        
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":NO-OP");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b1010;//XOR
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":XOR");
-	$display(";\n");
-	
-        //---------------------------------
-	inp2=32'b00000000000000000000000011011011;
-	inp1=32'b00000000000000000000000001101101;
-	opcode=4'b1011;//XNOR
-	#10	
-        
-	$write("[%32b]",inp2);
- 	$write("[%32b]",inp1);
- 	$write("[%4b]",opcode);
-        $write("\n");
- 	$write("[%64b]",out1);
- 	$write("[%2b]",error);	
-	$write(":XNOR");
-	$display(";\n");
-	
-
+	opcode=4'b1101;//RESET
+	#10
+	//---------------------------------	
+	inp1=32'b00000000000000000000000000000001;
+	opcode=4'b0001;//ADD
+	#10;
+	//---------------------------------	
+	inp1=32'b00000000000000000000000000000001;
+	opcode=4'b0001;//ADD
+	#10
+	//---------------------------------
 
 	$finish;
 	end
