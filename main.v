@@ -48,13 +48,13 @@ wire [15:0][ 1:0]  chErr;
 wire       [ 1:0]   bErr;
 wire       [ 1:0] unkErr;
 
-reg [31:0] reg1;
-reg [31:0] reg2;
+reg [31:0] InMod;
+reg [31:0] Feedback;
 
 reg [63:0] next;
 wire [63:0] current;
 
-DFF ACC1 [63:0] (clock, next, current);
+DFF Acc [63:0] (clock, next, current);
 //=======================================================
 //
 // INTERFACES
@@ -166,17 +166,17 @@ assign chErr[15]=unkErr;
 // INSTANTIATE MODULES
 //
 //===========================================================
-AddSub add1(reg2,reg1,modeSUB,outputADDSUB,Carry,ADDerror); 
-Mult mult1(reg2, reg1, outputMULT);
-Div div1(reg2,reg1,outputQuotient,DIVerror);
-Mod mod1(reg2,reg1,outputRemainder,DIVerror);
-NOT not1(reg2, outputNOT);
-ANDER and1(reg2, reg1, outputAND);
-ORER or1(reg2, reg1, outputOR);
-NANDER nand1(reg2, reg1, outputNAND);
-NORER nor1(reg2, reg1, outputNOR);
-XORER xor1(reg2, reg1, outputXOR);
-XNORER xnor1(reg2, reg1, outputXNOR);
+AddSub add1(Feedback,InMod,modeSUB,outputADDSUB,Carry,ADDerror); 
+Mult mult1(Feedback, InMod, outputMULT);
+Div div1(Feedback,InMod,outputQuotient,DIVerror);
+Mod mod1(Feedback,InMod,outputRemainder,DIVerror);
+Not not1(Feedback, outputNOT);
+And and1(Feedback, InMod, outputAND);
+Or or1(Feedback, InMod, outputOR);
+Nand nand1(Feedback, InMod, outputNAND);
+Nor nor1(Feedback, InMod, outputNOR);
+Xor xor1(Feedback, InMod, outputXOR);
+Xnor xnor1(Feedback, InMod, outputXNOR);
 
 
 
@@ -188,8 +188,8 @@ ErrMux muxErr(chErr,select,bErr);
 always@(*)
 begin
   
-  reg1 = input1;
-  reg2 = current[31:0]; //High 32 bits are dropped
+  InMod = input1;
+  Feedback = current[31:0]; //High 32 bits are dropped
   //Check for Subtraction Mode
   modeSUB=~opcode[3]&~opcode[2]&opcode[1]&~opcode[0];//0010, Channel 2
     
@@ -266,7 +266,7 @@ initial begin
 	3: $display("%32b  *  %32b = \n%64b  , MULT"  ,bb8.current[31:0],inp1,bb8.b);
 	4: $display("%32b  /  %32b = \n%64b  , DIV"  ,bb8.current[31:0],inp1,bb8.b);
 	5: $display("%32b  MOD  %32b = \n%64b  , MOD"  ,bb8.current[31:0],inp1,bb8.b);
-	6: $display("NOT  %32b = \n%64b  , NOT"  ,bb8.current[31:0],bb8.b);
+	6: $display("NOT  %32b ==> \n%64b  , NOT"  ,bb8.current[31:0],bb8.b);
 	7: $display("%32b AND %32b = \n%64b  , AND"  ,bb8.current[31:0],inp1,bb8.b);
 	8: $display("%32b OR %32b = \n%64b  , OR"  ,bb8.current[31:0],inp1,bb8.b);
 	9: $display("%32b NAND %32b = \n%64b  , NAND"  ,bb8.current[31:0],inp1,bb8.b);

@@ -125,46 +125,46 @@ module AddSub(inputA,inputB,mode,sum,carry,overflow);
     FullAdder FA29(inputA[29],b29,  c29,c30,sum[29]);
     FullAdder FA30(inputA[30],b30,  c30,c31,sum[30]);
     FullAdder FA31(inputA[31],b31,  c31,c32,sum[31]);
+     
+    always@(*)
+    begin
+        overflow=c32^c31;
+    end
     
     //Set higher 32 bits of output to zero
-    assign sum[32] = 1'b0 ^ mode;
-    assign sum[33] = 1'b0 ^ mode;
-    assign sum[34] = 1'b0 ^ mode;
-    assign sum[35] = 1'b0 ^ mode;
-    assign sum[36] = 1'b0 ^ mode;
-    assign sum[37] = 1'b0 ^ mode;
-    assign sum[38] = 1'b0 ^ mode;
-    assign sum[39] = 1'b0 ^ mode;
-    assign sum[40] = 1'b0 ^ mode;
-    assign sum[41] = 1'b0 ^ mode;
-    assign sum[42] = 1'b0 ^ mode;
-    assign sum[43] = 1'b0 ^ mode;
-    assign sum[44] = 1'b0 ^ mode;
-    assign sum[45] = 1'b0 ^ mode;
-    assign sum[46] = 1'b0 ^ mode;
-    assign sum[47] = 1'b0 ^ mode;
-    assign sum[48] = 1'b0 ^ mode;
-    assign sum[49] = 1'b0 ^ mode;
-    assign sum[50] = 1'b0 ^ mode;
-    assign sum[51] = 1'b0 ^ mode;
-    assign sum[52] = 1'b0 ^ mode;
-    assign sum[53] = 1'b0 ^ mode;
-    assign sum[54] = 1'b0 ^ mode;
-    assign sum[55] = 1'b0 ^ mode;
-    assign sum[56] = 1'b0 ^ mode;
-    assign sum[57] = 1'b0 ^ mode;
-    assign sum[58] = 1'b0 ^ mode;
-    assign sum[59] = 1'b0 ^ mode;
-    assign sum[60] = 1'b0 ^ mode;
-    assign sum[61] = 1'b0 ^ mode;
-    assign sum[62] = 1'b0 ^ mode;
-    assign sum[63] = 1'b0 ^ mode;
+    assign sum[32] = 1'b0 ^ overflow;
+    assign sum[33] = 1'b0 ^ overflow;
+    assign sum[34] = 1'b0 ^ overflow;
+    assign sum[35] = 1'b0 ^ overflow;
+    assign sum[36] = 1'b0 ^ overflow;
+    assign sum[37] = 1'b0 ^ overflow;
+    assign sum[38] = 1'b0 ^ overflow;
+    assign sum[39] = 1'b0 ^ overflow;
+    assign sum[40] = 1'b0 ^ overflow;
+    assign sum[41] = 1'b0 ^ overflow;
+    assign sum[42] = 1'b0 ^ overflow;
+    assign sum[43] = 1'b0 ^ overflow;
+    assign sum[44] = 1'b0 ^ overflow;
+    assign sum[45] = 1'b0 ^ overflow;
+    assign sum[46] = 1'b0 ^ overflow;
+    assign sum[47] = 1'b0 ^ overflow;
+    assign sum[48] = 1'b0 ^ overflow;
+    assign sum[49] = 1'b0 ^ overflow;
+    assign sum[50] = 1'b0 ^ overflow;
+    assign sum[51] = 1'b0 ^ overflow;
+    assign sum[52] = 1'b0 ^ overflow;
+    assign sum[53] = 1'b0 ^ overflow;
+    assign sum[54] = 1'b0 ^ overflow;
+    assign sum[55] = 1'b0 ^ overflow;
+    assign sum[56] = 1'b0 ^ overflow;
+    assign sum[57] = 1'b0 ^ overflow;
+    assign sum[58] = 1'b0 ^ overflow;
+    assign sum[59] = 1'b0 ^ overflow;
+    assign sum[60] = 1'b0 ^ overflow;
+    assign sum[61] = 1'b0 ^ overflow;
+    assign sum[62] = 1'b0 ^ overflow;
+    assign sum[63] = 1'b0 ^ overflow;
 
-always@(*)
-begin
-    overflow=c32^c31;
-end
- 
 endmodule
 
 

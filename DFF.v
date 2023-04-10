@@ -5,5 +5,5 @@ module DFF(clock,in,out);
     reg out;
 
     always @(posedge clock)
-    out = in;
+        out = in;
 endmodule

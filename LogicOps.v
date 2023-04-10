@@ -1,7 +1,7 @@
 //============================================
 //NOT operation
 //============================================
-module NOT(input2,output1);
+module Not(input2,output1);
 input  [31:0] input2;
 output [63:0] output1;
 wire   [31:0] input2;
@@ -20,7 +20,7 @@ endmodule
 //============================================
 //AND operation
 //============================================
-module ANDER(input1,input2,output1);
+module And(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
@@ -41,7 +41,7 @@ endmodule
 //============================================
 //XOR operation
 //============================================
-module XORER(input1,input2,output1);
+module Xor(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
@@ -63,7 +63,7 @@ endmodule
 //============================================
 // OR operation
 //============================================
-module ORER(input1,input2,output1);
+module Or(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
@@ -84,7 +84,7 @@ endmodule
 //============================================
 //NAND operation
 //============================================
-module NANDER(input1,input2,output1);
+module Nand(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
@@ -105,7 +105,7 @@ endmodule
 //============================================
 //XNOR operation
 //============================================
-module XNORER(input1,input2,output1);
+module Xnor(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
@@ -127,7 +127,7 @@ endmodule
 //============================================
 // NOR operation
 //============================================
-module NORER(input1,input2,output1);
+module Nor(input1,input2,output1);
 input  [31:0] input1;
 input  [31:0] input2;
 output [63:0] output1;
