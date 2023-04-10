@@ -9,7 +9,7 @@
 //Breadboard
 //
 //=================================================================
-module breadboard(clock,reset,input1,input2,output1,opcode,error);
+module breadboard(clock,reset,input1,output1,opcode,error);
 //=======================================================
 //
 // Parameter Definitions
@@ -18,13 +18,11 @@ module breadboard(clock,reset,input1,input2,output1,opcode,error);
 input clock;
 input reset;
 input [31:0] input1;
-input [31:0] input2;
 input [3:0] opcode;
 output [63:0] output1;
 output [1:0] error;
 
 wire [31:0] input1;
-wire [31:0] input2;
 wire [3:0] opcode;
 reg  [63:0] output1;
 reg  [1:0] error;
@@ -224,7 +222,6 @@ module testbench();
 //====================================================
    reg clock;
    reg reset;
-   reg  [31:0] inp2;
    reg  [31:0] inp1;
    reg  [3:0] opcode;
    wire [63:0] out1;
@@ -236,7 +233,7 @@ module testbench();
 // Create Breadboard
 //
 //====================================================
-    breadboard bb8(clock,reset,inp1,inp2,out1,opcode,error);
+    breadboard bb8(clock,reset,inp1,out1,opcode,error);
 
 
 //====================================================
