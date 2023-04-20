@@ -213,15 +213,30 @@ module Mod (dividend, divisor,remainder,error);
 endmodule
 
 
-module Mult(multiplicand,multiplier,product);
+module Mult(input [31:0] multiplicand, input [31:0] multiplier, output[63:0] product);
     
-    input [31:0] multiplicand, multiplier;
-    output[63:0] product;
-    wire [31:0] multiplicand, multiplier;
-    reg[63:0] product;
+    //input [31:0] multiplicand, multiplier;
+    //output[63:0] product;
+    //wire [31:0] multiplicand, multiplier;
+    //reg[63:0] product;
+    
+    reg [31:0] A, B, Q;
+    reg C;
+    integer k;
+    assign product = {C, A, Q};
     
     always@(*) begin
-        product=multiplicand*multiplier;
+        Q = multiplier;
+        B = multiplicand;
+        C = 0;
+        A = 0;
+        for (k = 0; k <= 31; k = k + 1) 
+            begin
+                if (Q[0]) 
+                    {C, A} = A + B;
+                {C, A, Q} = ({C, A, Q} >> 1);
+            end
+
     end
 endmodule
 
