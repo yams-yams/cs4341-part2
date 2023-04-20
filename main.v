@@ -97,7 +97,7 @@ wire [63:0] outputXNOR;
 
 //=======================================================
 //
-// Error Reporting
+// error Reporting
 //
 //=======================================================
  
@@ -106,7 +106,7 @@ reg errLow;
 
 //=======================================================
 //
-// Connect the MUX to the OpCodes
+// Connect the MUX to the opcodes
 //
 // Channel 0, Opcode 0000, NOOP 
 // Channel 1, Opcode 0001, Addition 
@@ -198,7 +198,7 @@ begin
   errHigh=DIVerror;
   errLow=ADDerror;
 
-  // Set Errors of Operations to Error
+  // Set errors of Operations to error
   error=bErr;
 
   //assign output=b;
@@ -227,7 +227,16 @@ module testbench();
    wire [63:0] out1;
    wire [1:0] error;
    reg [15:0] count;
-   
+  
+   reg [31:0] radius;
+   reg [31:0] sideA;
+   reg [31:0] sideB;
+   reg [31:0] sideC;
+   reg [63:0] hold;
+   reg [63:0] whole;
+   reg [63:0] fraction;
+
+
 //====================================================
 //
 // Create Breadboard
@@ -287,66 +296,105 @@ end
 //====================================================
 
 	initial begin//Start Stimulous Thread
-	#6;	
-	//---------------------------------
-	inp1=32'b00000000000000000000000000000000;
-	opcode=4'b0000;//NO-OP
-	#10; 
-	//---------------------------------
-	inp1=32'b00000000000000000000000000000000;
-	opcode=4'b1101;//RESET
-	#10
-	//---------------------------------	
-	inp1=32'b00010100001100000101111001111001;
-	opcode=4'b0001;//ADD
-	#10;
-	//---------------------------------	
-	inp1=32'b00000000000000000000000001111001;
-	opcode=4'b0010;//SUB
-	#10
-	//---------------------------------
-        inp1=32'b00000000000000000000000001111001;
-	opcode=4'b0011;//MULT
-	#10
-	//---------------------------------
-        inp1=32'b00000000000000000000000000000011;
-	opcode=4'b0100;//DIV
-	#10
-	//---------------------------------
-        inp1=32'b00010100000000000000000000000001;
-	opcode=4'b0101;//MOD
-	#10
-	//---------------------------------
-        inp1=32'b11100111001110011100111001110011;
-	opcode=4'b0110;//NOT
-	#10
-	//---------------------------------
-        inp1=32'b00000000000000000000111111111011;
-	opcode=4'b0111;//AND
-	#10
-	//---------------------------------
-        inp1=32'b01110000000000001110000001111001;
-	opcode=4'b1000;//OR
-	#10
-	//---------------------------------
-        inp1=32'b01111111100000111111100001100111;
-	opcode=4'b1001;//NAND
-	#10
-	//---------------------------------
-        inp1=32'b01111000000000000111000000110001;
-	opcode=4'b1010;//NOR
-	#10
-	//---------------------------------
-        inp1=32'b00011000001110000101001100010100;
-	opcode=4'b1011;//XOR
-	#10
-	//---------------------------------
-        inp1=32'b11100011000100110111000110110001;
-	opcode=4'b1100;//XNOR
-	#10
-	//---------------------------------
+	
+        sideA=3;
+        sideB=4;
+        sideC=5;
+        radius=5;
+	
+	$display();
+	$display("--------------------------");
+	$display("No-Op");
+	inp1=32'd0  ; 	opcode=4'b0000;	#10;//No-Op
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 
-	$finish;
+	
+	$display();
+	$display("--------------------------");
+	$display("Reset");
+	inp1=32'd0  ; opcode=4'b1101;#10;//Reset 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error); 
+	
+
+	$display();
+	$display("--------------------------");
+	$display("Add 2");
+	inp1=32'd2  ; opcode=4'b0001;#10;//Add 2 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+	
+	$display();
+	$display("--------------------------");
+	$display("Multiply by Radius");
+	inp1=radius ; opcode=4'b0011;#10;//Multiply by R 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+        $display();
+	$display("--------------------------");
+	$display("No-Op");
+	inp1=32'd0  ; 	opcode=4'b0000;	#10;//No-Op
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
+	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+
+	$display();
+	$display("--------------------------");
+	$display("Multiply by 314");
+	inp1=32'd314; opcode=4'b0011;#10;//Multiply by 314
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	//inp1=32'd314; opcode=4'b0011;#5;//Multiply by 314
+	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	
+        $display();
+	$display("--------------------------");
+	$display("No-Op");
+	inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
+	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+	hold=bb8.b;
+	
+	$display();
+	$display("--------------------------");
+	$display("Divide by 100");
+	inp1=32'd100;	opcode=4'b0100;#10;
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	//inp1=32'd100;	opcode=4'b0100;#5;
+	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
+	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	
+	whole=bb8.b;//Divide by 100
+	
+	$display();
+	$display("--------------------------");
+	$display("Reset");
+   	inp1=32'd0;	opcode=4'b1101;#10;//Reset
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	
+
+	$display();
+	$display("--------------------------");
+	$display("Add back temp value");
+ 	inp1=hold   ; opcode=4'b0001;#10;//Add Temp back
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+	$display();
+	$display("--------------------------");
+	$display("Modulus by 100");
+	inp1=32'd100;	opcode=4'b0101;#10;
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+
+	fraction=bb8.b;
+
+	$display("==========================");
+	$display("Circumference of a circle with radius %2d is %3d.%-2d.",radius,whole,fraction);
+	
+
+
+        $finish;
 	end
 
 endmodule
