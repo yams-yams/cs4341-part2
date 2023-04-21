@@ -265,7 +265,7 @@ initial begin
 // DISPLAY Thread
 //
 //====================================================
-initial begin
+/*initial begin
   forever
     begin 
       case (opcode)
@@ -286,9 +286,9 @@ initial begin
 		 
       endcase
  
-      #10;
+      #5;
     end
-end
+end*/
 //====================================================
 //
 // STIMULOUS
@@ -296,7 +296,7 @@ end
 //====================================================
 
 	initial begin//Start Stimulous Thread
-	
+	#10
         sideA=3;
         sideB=4;
         sideC=5;
@@ -312,28 +312,32 @@ end
 	$display();
 	$display("--------------------------");
 	$display("Reset");
-	inp1=32'd0  ; opcode=4'b1101;#10;//Reset 
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error); 
 	
 
 	$display();
 	$display("--------------------------");
 	$display("Add 2");
-	inp1=32'd2  ; opcode=4'b0001;#10;//Add 2 
+	inp1=32'd2  ; opcode=4'b0001;#5;//Add 2 
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
 	
 	$display();
 	$display("--------------------------");
 	$display("Multiply by Radius");
-	inp1=radius ; opcode=4'b0011;#10;//Multiply by R 
+	inp1=radius ; opcode=4'b0011;#5;//Multiply by R 
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
         $display();
 	$display("--------------------------");
 	$display("No-Op");
-	inp1=32'd0  ; 	opcode=4'b0000;	#10;//No-Op
+	inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
 	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 
@@ -341,8 +345,9 @@ end
 	$display();
 	$display("--------------------------");
 	$display("Multiply by 314");
-	inp1=32'd314; opcode=4'b0011;#10;//Multiply by 314
+	inp1=32'd314; opcode=4'b0011;#5;//Multiply by 314
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 	//inp1=32'd314; opcode=4'b0011;#5;//Multiply by 314
 	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	
@@ -351,43 +356,48 @@ end
 	$display("No-Op");
 	inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
 	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 
-	hold=bb8.b;
+	hold=out1;
 	
 	$display();
 	$display("--------------------------");
 	$display("Divide by 100");
-	inp1=32'd100;	opcode=4'b0100;#10;
+	inp1=32'd100;	opcode=4'b0100;#5;
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 	//inp1=32'd100;	opcode=4'b0100;#5;
 	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
 	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	
-	whole=bb8.b;//Divide by 100
+	whole=out1;//Divide by 100
 	
 	$display();
 	$display("--------------------------");
 	$display("Reset");
-   	inp1=32'd0;	opcode=4'b1101;#10;//Reset
+   	inp1=32'd0;	opcode=4'b1101;#5;//Reset
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 	
 
 	$display();
 	$display("--------------------------");
 	$display("Add back temp value");
- 	inp1=hold   ; opcode=4'b0001;#10;//Add Temp back
+ 	inp1=hold   ; opcode=4'b0001;#5;//Add Temp back
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
 	$display();
 	$display("--------------------------");
 	$display("Modulus by 100");
-	inp1=32'd100;	opcode=4'b0101;#10;
+	inp1=32'd100;	opcode=4'b0101;#5;
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
-	fraction=bb8.b;
+	fraction=out1;
 
 	$display("==========================");
 	$display("Circumference of a circle with radius %2d is %3d.%-2d.",radius,whole,fraction);
