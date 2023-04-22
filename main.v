@@ -232,6 +232,11 @@ module testbench();
    reg [31:0] sideA;
    reg [31:0] sideB;
    reg [31:0] sideC;
+   reg [31:0] base;
+   reg [31:0] height;
+   reg [31:0] width;
+   reg [31:0] length;
+
    reg [63:0] hold;
    reg [63:0] whole;
    reg [63:0] fraction;
@@ -260,35 +265,7 @@ initial begin
                 $display("Tick");
         end
     end
-//====================================================
-//
-// DISPLAY Thread
-//
-//====================================================
-/*initial begin
-  forever
-    begin 
-      case (opcode)
-        0: $display("%32b ==> \n%64b         , NO-OP",bb8.current[31:0],bb8.b);
-	1: $display("%32b  +  %32b = \n%64b  , ADD"  ,bb8.current[31:0],inp1,bb8.b);
-	2: $display("%32b  -  %32b = \n%64b  , SUB"  ,bb8.current[31:0],inp1,bb8.b);
-	3: $display("%32b  *  %32b = \n%64b  , MULT"  ,bb8.current[31:0],inp1,bb8.b);
-	4: $display("%32b  /  %32b = \n%64b  , DIV"  ,bb8.current[31:0],inp1,bb8.b);
-	5: $display("%32b  MOD  %32b = \n%64b  , MOD"  ,bb8.current[31:0],inp1,bb8.b);
-	6: $display("NOT  %32b ==> \n%64b  , NOT"  ,bb8.current[31:0],bb8.b);
-	7: $display("%32b AND %32b = \n%64b  , AND"  ,bb8.current[31:0],inp1,bb8.b);
-	8: $display("%32b OR %32b = \n%64b  , OR"  ,bb8.current[31:0],inp1,bb8.b);
-	9: $display("%32b NAND %32b = \n%64b  , NAND"  ,bb8.current[31:0],inp1,bb8.b);
-	10: $display("%32b NOR %32b = \n%64b  , NOR"  ,bb8.current[31:0],inp1,bb8.b);
-	11: $display("%32b XOR %32b = \n%64b  , XOR"  ,bb8.current[31:0],inp1,bb8.b);
-	12: $display("%32b XNOR %32b = \n%64b  , XNOR"  ,bb8.current[31:0],inp1,bb8.b);
-        13: $display("%32b ==> \n%64b         , RESET",32'b00000000000000000000000000000000,bb8.b);
-		 
-      endcase
- 
-      #5;
-    end
-end*/
+
 //====================================================
 //
 // STIMULOUS
@@ -300,15 +277,97 @@ end*/
         sideA=3;
         sideB=4;
         sideC=5;
+        base=3;
+        height=4;
+        length=6;
+        width=7;
         radius=5;
+	
+        $display();
+	$display("==========================");
+	$display("Now Calculating the Perimeter of a Triangle with side lengths sideA=3, sideB=4, and sideC=5");
+	$display("==========================");
+	$display();
+	$display("--------------------------");
+	$display("Reset");
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error); 
 	
 	$display();
 	$display("--------------------------");
-	$display("No-Op");
-	inp1=32'd0  ; 	opcode=4'b0000;	#10;//No-Op
+	$display("Add sideA");
+	inp1=sideA  ; opcode=4'b0001;#5;//Add 2 
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
+
+	$display();
+	$display("--------------------------");
+	$display("Add sideB");
+	inp1=sideB  ; opcode=4'b0001;#5;//Add 2 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
+
+
+	$display();
+	$display("--------------------------");
+	$display("Add sideC");
+	inp1=sideC  ; opcode=4'b0001;#5;//Add 2 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
+
+	whole=out1;
+
+	$display("==========================");
+	$display("Perimeter of a triangle with side lengths %2d, %2d, and %2d is %3d.",sideA,sideB,sideC,whole);
 	
+        $display();
+	$display("==========================");
+	$display("Now Calculating the Perimeter of a Rectangle with side lengths sideA=3, sideB=5");
+	$display("==========================");
+	$display();
+	$display("--------------------------");
+	$display("Reset");
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
+	inp1=32'd0  ; opcode=4'b1101;#5;//Reset 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error); 
+	
+	$display();
+	$display("--------------------------");
+	$display("Add sideA");
+	inp1=sideA  ; opcode=4'b0001;#5;//Add 2 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
+
+
+	$display();
+	$display("--------------------------");
+	$display("Add sideB");
+	inp1=sideB  ; opcode=4'b0001;#5;//Add 2 
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
+
+
+	$display();
+	$display("--------------------------");
+	$display("Multiply by 2");
+	inp1=32'd2  ; opcode=4'b0011;#5;//Mult 2
+	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
+	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
+
+	whole=out1;
+
+	$display("==========================");
+	$display("Perimeter of a rectangle with side lengths %2d and %2d is %3d.",sideA,sideB,whole);
+	
+
+    //Perimeter of a Circle
+	
+	$display();
+	$display("==========================");
+	$display("Now Calculating the Circumference of a Circle with radius=5");
+	$display("==========================");
 	$display();
 	$display("--------------------------");
 	$display("Reset");
@@ -332,35 +391,15 @@ end*/
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
 
-        $display();
-	$display("--------------------------");
-	$display("No-Op");
-	inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
-	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
-	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
-	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-
-
+        
 	$display();
 	$display("--------------------------");
 	$display("Multiply by 314");
 	inp1=32'd314; opcode=4'b0011;#5;//Multiply by 314
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
-	//inp1=32'd314; opcode=4'b0011;#5;//Multiply by 314
-	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	
-        $display();
-	$display("--------------------------");
-	$display("No-Op");
-	inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
-	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
-	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
-	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-
-	hold=out1;
+       	hold=out1;
 	
 	$display();
 	$display("--------------------------");
@@ -368,11 +407,7 @@ end*/
 	inp1=32'd100;	opcode=4'b0100;#5;
 	$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
 	inp1=32'd0  ; opcode=4'b0000;#5;//No-Op
-	//inp1=32'd100;	opcode=4'b0100;#5;
-	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-	//inp1=32'd0  ; 	opcode=4'b0000;	#5;//No-Op
-	//$display("%b|%d|%b|%d|%b",clock,inp1,opcode,out1,error);
-	
+
 	whole=out1;//Divide by 100
 	
 	$display();
